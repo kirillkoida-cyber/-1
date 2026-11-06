@@ -1,12 +1,29 @@
+import logging
+import os
 
 import telebot
 
-TOKEN = 8984563168:AAF8ztPmans_069719ih-E953klJDPtZgAg
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+)
+
+TOKEN = os.getenv("BOT_TOKEN")
+
+if not TOKEN:
+    raise RuntimeError(
+        "Не задано змінну середовища BOT_TOKEN. "
+        "Додай токен бота в налаштуваннях хостингу."
+    )
 
 bot = telebot.TeleBot(TOKEN)
 
-@bot.message_handler(commands=['start'])
+
+@bot.message_handler(commands=["start"])
 def start(message):
     bot.reply_to(message, "Привіт! Бот працює! ✅")
 
-bot.infinity_polling()
+
+if __name__ == "__main__":
+    logging.info("Telegram-бот запускається...")
+    bot.infinity_polling(skip_pending=True, timeout=30, long_polling_timeout=30)
